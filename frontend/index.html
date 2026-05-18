@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cobro de Mensualidad - UE 27 de Mayo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <nav class="navbar no-print">
+        <div class="logo-container">
+            <img src="../logo.png" alt="Logo UE 27 de Mayo" id="navLogo" onerror="this.src='https://via.placeholder.com/50?text=Logo'">
+            <h1>UE 27 de Mayo</h1>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="active"><i class="fas fa-money-bill-wave"></i> Cobros</a>
+            <a href="estudiantes.html"><i class="fas fa-users"></i> Inscritos</a>
+        </div>
+    </nav>
+
+    <div class="container no-print">
+        <div class="dashboard-grid">
+            <!-- Columna Izquierda: Datos del Padre -->
+            <div class="glass-panel" style="grid-column: 1 / 2;">
+                <h3 style="color: var(--gold-color); margin-top:0;"><i class="fas fa-user-tie"></i> Datos del Padre/Tutor</h3>
+                <div class="form-group">
+                    <label>N° Carnet / CI:</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="inputCarnet" class="form-control" placeholder="Ej: 1234567">
+                        <button id="btnBuscarPadre" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Nombre Completo:</label>
+                    <input type="text" id="inputNombrePadre" class="form-control" placeholder="Nombre del apoderado">
+                </div>
+                <input type="hidden" id="padreId">
+            </div>
+
+            <!-- Columna Central: Búsqueda de Hijos -->
+            <div class="glass-panel" style="grid-column: 2 / 3;">
+                <h3 style="color: var(--gold-color); margin-top:0;"><i class="fas fa-child"></i> Buscar y Seleccionar Hijos</h3>
+                <div class="form-group">
+                    <label>Buscar estudiante por apellidos:</label>
+                    <input type="text" id="searchEstudiante" class="form-control" placeholder="Escriba el apellido del estudiante...">
+                </div>
+                <div style="max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 1rem;" id="resultsEstudiantes">
+                    <p style="color: #aaa; text-align: center; margin: 0;">Los resultados aparecerán aquí.</p>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Recibo -->
+            <div class="glass-panel" style="grid-column: 3 / 4; display: flex; flex-direction: column;">
+                <h3 style="color: var(--gold-color); margin-top:0;"><i class="fas fa-receipt"></i> Resumen de Pago</h3>
+                
+                <div style="flex-grow: 1;">
+                    <p style="font-size: 0.9rem; color: #ccc;">Concepto: <strong>Mensualidad Anual</strong></p>
+                    <p style="font-size: 0.9rem; color: #ccc;">Monto Total: <strong style="color: var(--secondary-color); font-size: 1.2rem;">50 Bs.</strong></p>
+                    
+                    <h4 style="margin-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">Hijos Seleccionados:</h4>
+                    <ul id="listaHijosSeleccionados" style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem;">
+                        <li style="color: #888; font-style: italic;">Ninguno seleccionado</li>
+                    </ul>
+                </div>
+
+                <div style="margin-top: 1.5rem;">
+                    <button id="btnGenerarRecibo" class="btn btn-success" style="width: 100%;"><i class="fas fa-print"></i> Generar y Cobrar</button>
+                    <button id="btnNuevoRegistro" class="btn btn-outline" style="width: 100%; margin-top: 0.5rem;"><i class="fas fa-redo"></i> Nuevo Registro</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vista de Impresión del Recibo (Oculta en pantalla) -->
+    <div id="printReceiptArea" class="print-only" style="padding: 2rem; max-width: 800px; margin: 0 auto; font-family: Arial, sans-serif; border: 2px solid #000; position: relative;">
+        <!-- Cabecera -->
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00B050; padding-bottom: 1rem; margin-bottom: 1rem;">
+            <div style="width: 120px;">
+                <img src="../logo.png" id="printLogo" style="width: 100%;" alt="Logo">
+            </div>
+            <div style="text-align: center; flex-grow: 1;">
+                <h2 style="color: #FFA500; margin: 0; font-size: 1.5rem; text-transform: uppercase;">UNIDAD EDUCATIVA 27 DE MAYO</h2>
+                <p style="margin: 5px 0; font-size: 0.9rem; color: #333;">BOLIVIA - SANTA CRUZ - PAILON</p>
+                <p style="margin: 5px 0; font-size: 0.9rem; color: #333;">CÓDIGO SIE: 71940029 | Tel Cel: 77633299</p>
+                <h1 style="color: #000; letter-spacing: 5px; margin: 15px 0 0 0;">R E C I B O</h1>
+            </div>
+            <div style="width: 120px; text-align: right;">
+                <p style="font-weight: bold; color: red; font-size: 1.2rem; margin: 0;">N° <span id="printNroRecibo">-----</span></p>
+            </div>
+        </div>
+
+        <!-- Datos del Padre -->
+        <div style="margin-bottom: 1rem;">
+            <p style="margin: 5px 0;"><strong>NOMBRE DEL PADRE/MADRE O APODERADO:</strong></p>
+            <div style="border-bottom: 1px dotted #000; padding: 5px 0; font-size: 1.1rem;" id="printNombrePadre"></div>
+        </div>
+
+        <!-- Tabla Estudiantes -->
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; border: 2px solid #00B050;">
+            <thead>
+                <tr style="background-color: #f0f0f0;">
+                    <th style="border: 1px solid #00B050; padding: 8px; text-align: center; width: 50px; color: #00B050;">Nº</th>
+                    <th style="border: 1px solid #00B050; padding: 8px; text-align: left; color: #00B050;">NOMBRE DEL ESTUDIANTE</th>
+                    <th style="border: 1px solid #00B050; padding: 8px; text-align: center; width: 150px; color: #00B050;">CURSO / PARALELO</th>
+                </tr>
+            </thead>
+            <tbody id="printTbodyHijos">
+                <!-- Se llena por JS (hasta 6 espacios) -->
+            </tbody>
+        </table>
+
+        <!-- Totales y Firmas -->
+        <div style="margin-bottom: 1rem;">
+            <p style="margin: 5px 0; color: #00B050; font-weight: bold;">POR CONCEPTO DE:</p>
+            <p style="margin: 5px 0; padding-left: 20px;">PAGO DE MENSUALIDAD ANUAL</p>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 3rem;">
+            <div style="width: 60%;">
+                <p style="margin: 5px 0;"><span style="color: #00B050; font-weight: bold;">LA SUMA DE:</span> <span style="font-size: 1.2rem; font-weight: bold;">CINCUENTA 00/100 BOLIVIANOS</span></p>
+            </div>
+            <div style="width: 30%; text-align: right;">
+                <p style="margin: 5px 0;"><span style="color: #00B050; font-weight: bold;">FECHA:</span> <span id="printFecha" style="border-bottom: 1px dotted #000; padding: 0 20px;"></span></p>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-around; margin-top: 50px;">
+            <div style="text-align: center; width: 40%;">
+                <div style="border-top: 1px dashed #000; padding-top: 5px;">ENTREGUÉ CONFORME</div>
+            </div>
+            <div style="text-align: center; width: 40%;">
+                <div style="border-top: 1px dashed #000; padding-top: 5px;">RECIBÍ CONFORME</div>
+            </div>
+        </div>
+        
+        <!-- Marca de agua de fondo opcional -->
+        <img src="../logo.png" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.05; width: 400px; z-index: -1;">
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

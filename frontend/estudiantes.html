@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudiantes Inscritos - UE 27 de Mayo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="../logo.png" alt="Logo UE 27 de Mayo" onerror="this.src='https://via.placeholder.com/50?text=Logo'">
+            <h1>UE 27 de Mayo</h1>
+        </div>
+        <div class="nav-links">
+            <a href="index.html"><i class="fas fa-money-bill-wave"></i> Cobros</a>
+            <a href="estudiantes.html" class="active"><i class="fas fa-users"></i> Inscritos</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="color: var(--gold-color); margin: 0;"><i class="fas fa-list"></i> Lista de Estudiantes Inscritos</h2>
+                <button id="btnExportar" class="btn btn-success"><i class="fas fa-file-excel"></i> Descargar Excel Pro</button>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                <div class="form-group" style="flex: 1;">
+                    <label>Buscar (Nombres/Apellidos):</label>
+                    <input type="text" id="inputSearch" class="form-control" placeholder="Ej: Perez">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Curso:</label>
+                    <select id="selectCurso" class="form-control">
+                        <option value="">Todos los cursos</option>
+                        <option value="Kinder">Kínder</option>
+                        <option value="1ro Primaria">1ro Primaria</option>
+                        <option value="2do Primaria">2do Primaria</option>
+                        <option value="3ro Primaria">3ro Primaria</option>
+                        <option value="4to Primaria">4to Primaria</option>
+                        <option value="5to Primaria">5to Primaria</option>
+                        <option value="6to Primaria">6to Primaria</option>
+                    </select>
+                </div>
+                <div class="form-group" style="width: 150px;">
+                    <label>Paralelo:</label>
+                    <select id="selectParalelo" class="form-control">
+                        <option value="">Todos</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="tablaEstudiantes">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Curso</th>
+                            <th>Paralelo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyEstudiantes">
+                        <!-- Llenado por JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="loadingMsg" style="text-align: center; padding: 2rem; display: none;">Cargando...</div>
+        </div>
+    </div>
+
+    <script src="js/estudiantes.js"></script>
+</body>
+</html>
