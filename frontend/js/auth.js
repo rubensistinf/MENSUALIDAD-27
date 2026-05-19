@@ -47,6 +47,21 @@ document.addEventListener("DOMContentLoaded", () => {
     // Modify UI based on role
     const currentPath = window.location.pathname;
     
+    // Add logout button to navbar (BOTH admin and secretaria)
+    const navLinks = document.querySelector('.nav-links');
+    if (navLinks && !document.getElementById('btnLogout')) {
+        const logoutBtn = document.createElement('a');
+        logoutBtn.href = '#';
+        logoutBtn.id = 'btnLogout';
+        logoutBtn.style.color = '#ff6b6b';
+        logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Salir';
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            logout();
+        });
+        navLinks.appendChild(logoutBtn);
+    }
+
     if (rol === 'admin') {
         // Hide elements that admin shouldn't see
         const adminHideElements = document.querySelectorAll('.admin-hide');
@@ -56,20 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (currentPath.includes('index.html') || currentPath.includes('importar_excel.html') || currentPath.includes('caja_informe.html')) {
             alert("Acceso denegado: Panel exclusivo de Secretaría.");
             window.location.href = 'estado_pagos.html';
-        }
-    } else if (rol === 'secretaria') {
-        // Add logout button to navbar if not exists
-        const navLinks = document.querySelector('.nav-links');
-        if (navLinks && !document.getElementById('btnLogout')) {
-            const logoutBtn = document.createElement('a');
-            logoutBtn.href = '#';
-            logoutBtn.id = 'btnLogout';
-            logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Salir';
-            logoutBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                logout();
-            });
-            navLinks.appendChild(logoutBtn);
         }
     }
 });
