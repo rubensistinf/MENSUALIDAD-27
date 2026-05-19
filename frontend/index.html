@@ -114,20 +114,18 @@
     <style>
         @media print {
             @page {
-                margin: 0; /* Quita los encabezados y pies de página automáticos del navegador */
+                margin: 1cm;
                 size: A4 portrait;
             }
             body {
-                margin: 1cm; /* Añade un margen interno para que no se corte al imprimir */
+                margin: 0;
             }
             #printReceiptArea {
-                height: 90vh; /* Ocupa casi toda la página para empujar las firmas abajo */
-                display: flex !important;
-                flex-direction: column;
+                display: block !important;
             }
             .firmas-container {
-                margin-top: auto !important; /* Empuja las firmas hasta el fondo */
-                padding-bottom: 20px;
+                margin-top: 30px !important;
+                padding-bottom: 10px;
             }
         }
     </style>
