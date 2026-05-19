@@ -1,10 +1,3 @@
-Viewed estudiantes.js:1-83
-
-Claro que sí, para que no tengas que buscar las líneas exactas, aquí tienes **todo el código completo y corregido** del archivo `estudiantes.js`. 
-
-Solo cópialo todo, pégalo en tu archivo `frontend/js/estudiantes.js` en GitHub (borrando todo lo que había antes), guárdalo ("Commit changes") y Render hará el resto:
-
-```javascript
 const API_URL = '/api';
 
 const tbody = document.getElementById('tbodyEstudiantes');
@@ -87,4 +80,3 @@ btnExportar.addEventListener('click', async () => {
 
 // Initial fetch
 fetchEstudiantes();
-```
