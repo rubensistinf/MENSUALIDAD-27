@@ -36,7 +36,7 @@ try:
 except Exception as migration_err:
     print(f"[Migration] Nota: {migration_err}")
 
-app = FastAPI(title="App Mensualidad Pro - UE 27 de Mayo")
+app = FastAPI(title="App Aporte Anual - UE 27 de Mayo")
 
 app.add_middleware(
     CORSMiddleware,
@@ -156,6 +156,26 @@ def cambiar_password(
     current_user.password_hash = get_password_hash(data.password_nuevo)
     db.commit()
     return {"message": "Contraseña cambiada exitosamente"}
+
+@app.post("/api/usuarios/reset-password")
+def reset_password(
+    data: schemas.ResetPassword,
+    db: Session = Depends(get_db)
+):
+    # Verify username and email
+    user = db.query(models.Usuario).filter(
+        models.Usuario.username == data.username,
+        models.Usuario.email == data.email
+    ).first()
+    
+    if not user:
+        raise HTTPException(status_code=400, detail="Usuario o correo incorrecto")
+        
+    # Reset to default passwords based on role
+    default_pass = "74420830" if user.rol == "admin" else "74420831"
+    user.password_hash = get_password_hash(default_pass)
+    db.commit()
+    return {"message": "Tu contraseña ha sido reseteada a la inicial del sistema"}
 
 # --- ESTUDIANTES ---
 
@@ -348,7 +368,7 @@ def create_recibo(
     ingreso = models.CajaTransaccion(
         tipo="ingreso",
         monto=recibo_data.monto,
-        descripcion=f"Cobro mensualidad {nro_recibo} - Padre ID {recibo_data.padre_id}",
+        descripcion=f"Cobro aporte anual {nro_recibo} - Padre ID {recibo_data.padre_id}",
         usuario_id=current_user.id
     )
     db.add(ingreso)
@@ -386,7 +406,7 @@ def sync_recibos(
         ingreso = models.CajaTransaccion(
             tipo="ingreso",
             monto=rd.monto,
-            descripcion=f"Sync Offline: Cobro mensualidad {nro_recibo} - Padre ID {rd.padre_id}",
+            descripcion=f"Sync Offline: Cobro aporte anual {nro_recibo} - Padre ID {rd.padre_id}",
             usuario_id=current_user.id
         )
         db.add(ingreso)

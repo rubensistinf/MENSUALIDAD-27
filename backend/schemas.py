@@ -88,6 +88,10 @@ class CambiarPassword(BaseModel):
     password_actual: str
     password_nuevo: str
 
+class ResetPassword(BaseModel):
+    username: str
+    email: str
+
 class TokenData(BaseModel):
     username: Optional[str] = None
     rol: Optional[str] = None
