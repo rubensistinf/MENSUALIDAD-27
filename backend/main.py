@@ -231,9 +231,15 @@ def delete_estudiante(
     if not estudiante:
         raise HTTPException(status_code=404, detail="Estudiante no encontrado")
         
-    db.delete(estudiante)
-    db.commit()
-    return {"message": "Estudiante eliminado correctamente"}
+    try:
+        # Eliminar detalles de recibo asociados para evitar error de clave foránea
+        db.query(models.DetalleRecibo).filter(models.DetalleRecibo.estudiante_id == estudiante_id).delete()
+        db.delete(estudiante)
+        db.commit()
+        return {"message": "Estudiante eliminado correctamente"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al eliminar: {str(e)}")
 
 @app.delete("/api/estudiantes")
 def delete_all_estudiantes(
@@ -243,9 +249,18 @@ def delete_all_estudiantes(
     if current_user.rol != "admin":
         raise HTTPException(status_code=403, detail="Solo el director puede vaciar la lista de estudiantes")
         
-    db.query(models.Estudiante).delete()
-    db.commit()
-    return {"message": "Todos los estudiantes han sido eliminados"}
+    try:
+        # Eliminar en orden para evitar errores de claves foráneas
+        db.query(models.DetalleRecibo).delete()
+        db.query(models.Recibo).delete()
+        db.query(models.CajaTransaccion).delete()
+        db.query(models.Estudiante).delete()
+        db.query(models.Padre).delete()
+        db.commit()
+        return {"message": "El año escolar ha sido vaciado correctamente"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al vaciar: {str(e)}")
 
 @app.post("/api/estudiantes", response_model=schemas.Estudiante)
 def create_estudiante(estudiante: schemas.EstudianteCreate, db: Session = Depends(get_db)):
