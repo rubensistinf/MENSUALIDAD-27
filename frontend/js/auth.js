@@ -73,3 +73,33 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 });
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent Chrome 67 and earlier from automatically showing the prompt
+    e.preventDefault();
+    // Stash the event so it can be triggered later.
+    deferredPrompt = e;
+    // Update UI to notify the user they can add to home screen
+    const navLinks = document.querySelector('.nav-links');
+    if (navLinks && !document.getElementById('btnInstallApp')) {
+        const installBtn = document.createElement('a');
+        installBtn.href = '#';
+        installBtn.id = 'btnInstallApp';
+        installBtn.style.color = '#FFA500';
+        installBtn.innerHTML = '<i class="fas fa-download"></i> Instalar App';
+        installBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            // Show the install prompt
+            deferredPrompt.prompt();
+            // Wait for the user to respond to the prompt
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                installBtn.style.display = 'none';
+            }
+            deferredPrompt = null;
+        });
+        // Insert before logout if it exists
+        navLinks.insertBefore(installBtn, navLinks.firstChild);
+    }
+});

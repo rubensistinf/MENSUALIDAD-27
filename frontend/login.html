@@ -3,7 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - UE 27 de Mayo</title>
+    <title>Mensualidad PRO - UE 27 de Mayo</title>
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FFA500">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Mensualidad 27">
+    <link rel="apple-touch-icon" href="images/logo.png">
+    <!-- Open Graph (previa al compartir) -->
+    <meta property="og:title" content="Mensualidad PRO - UE 27 de Mayo">
+    <meta property="og:description" content="Sistema de gestión de pagos de mensualidad. Registra cobros, genera recibos y consulta el estado de todos los estudiantes inscritos.">
+    <meta property="og:image" content="https://mensualidad-27.onrender.com/images/logo.png">
+    <meta property="og:url" content="https://mensualidad-27.onrender.com">
+    <meta property="og:type" content="website">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
@@ -49,7 +63,7 @@
 <body>
     <div class="login-container">
         <div class="logo-box">
-            <img src="../logo.png" alt="Logo UE 27 de Mayo" onerror="this.src='https://via.placeholder.com/80?text=Logo'">
+            <img src="images/logo.png" alt="Logo UE 27 de Mayo" onerror="this.src='https://via.placeholder.com/80?text=Logo'">
             <h1>Sistema PRO</h1>
             <p style="color: #aaa;">Gestión de Mensualidades</p>
         </div>
@@ -74,5 +88,6 @@
     </div>
 
     <script src="js/login.js"></script>
+    <script src="instalar/pwa.js"></script>
 </body>
 </html>

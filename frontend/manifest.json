@@ -1,22 +1,43 @@
 {
-  "name": "Mensualidad PRO UE 27 de Mayo",
+  "name": "Mensualidad PRO - UE 27 de Mayo",
   "short_name": "Mensualidad 27",
-  "description": "Sistema de Gestión de Pagos de Mensualidad",
+  "description": "Sistema de gestión de pagos de mensualidad para la Unidad Educativa 27 de Mayo. Registra cobros, genera recibos y consulta el estado de pagos de todos los estudiantes.",
   "start_url": "/login.html",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#1e1e1e",
+  "orientation": "portrait-primary",
+  "background_color": "#1a1a1a",
   "theme_color": "#FFA500",
+  "lang": "es",
   "icons": [
     {
-      "src": "https://via.placeholder.com/192.png/FFA500/FFFFFF?text=27+Mayo",
+      "src": "/images/logo.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://via.placeholder.com/512.png/FFA500/FFFFFF?text=27+Mayo",
+      "src": "/images/logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "label": "Pantalla principal de cobros"
+    }
+  ],
+  "categories": ["education", "finance", "utilities"],
+  "share_target": {
+    "action": "/",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
 }
