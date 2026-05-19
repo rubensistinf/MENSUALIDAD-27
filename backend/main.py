@@ -114,20 +114,24 @@ def create_initial_users():
     # --- Usuario Admin/Director ---
     admin = db.query(models.Usuario).filter(models.Usuario.username == "admin").first()
     if not admin:
-        admin = models.Usuario(username="admin", rol="admin")
+        admin = models.Usuario(
+            username="admin", 
+            rol="admin",
+            email="director@27demayo.com",
+            password_hash=get_password_hash("74420830")
+        )
         db.add(admin)
-    admin.email = "director@27demayo.com"
-    admin.password_hash = get_password_hash("74420830")
-    admin.rol = "admin"
 
     # --- Usuario Secretaria ---
     sec = db.query(models.Usuario).filter(models.Usuario.username == "secretaria").first()
     if not sec:
-        sec = models.Usuario(username="secretaria", rol="secretaria")
+        sec = models.Usuario(
+            username="secretaria", 
+            rol="secretaria",
+            email="secretaria@27demayo.com",
+            password_hash=get_password_hash("74420831")
+        )
         db.add(sec)
-    sec.email = "secretaria@27demayo.com"
-    sec.password_hash = get_password_hash("74420831")
-    sec.rol = "secretaria"
 
     db.commit()
 
