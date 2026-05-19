@@ -1,4 +1,4 @@
-const CACHE_NAME = 'aporte-anual-v4';
+const CACHE_NAME = 'aporte-anual-v5';
 const ASSETS = [
     '/',
     '/login.html',
