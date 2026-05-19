@@ -104,3 +104,18 @@ window.addEventListener('beforeinstallprompt', (e) => {
         navLinks.insertBefore(installBtn, navLinks.firstChild);
     }
 });
+
+// =====================================================
+// KEEP-ALIVE: Ping al servidor cada 9 min para que
+// Render no ponga el servidor a dormir (plan gratuito)
+// =====================================================
+function keepAlive() {
+    fetch('/api/ping', { method: 'GET' })
+        .then(r => r.json())
+        .then(() => console.log('[KeepAlive] Servidor activo ✓'))
+        .catch(() => console.warn('[KeepAlive] Sin conexión, reintentando...'));
+}
+
+// Primer ping inmediato al abrir la app, luego cada 9 minutos
+keepAlive();
+setInterval(keepAlive, 9 * 60 * 1000);
