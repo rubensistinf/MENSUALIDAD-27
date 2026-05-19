@@ -47,27 +47,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // Modify UI based on role
     const currentPath = window.location.pathname;
     
-    // Add logout button to navbar (BOTH admin and secretaria)
-    const navLinks = document.querySelector('.nav-links');
-    if (navLinks && !document.getElementById('btnLogout')) {
-        const logoutBtn = document.createElement('a');
-        logoutBtn.href = '#';
-        logoutBtn.id = 'btnLogout';
-        logoutBtn.style.color = '#ff6b6b';
-        logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Salir';
-        logoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            logout();
-        });
-        navLinks.appendChild(logoutBtn);
-    }
-
     if (rol === 'admin') {
-        // Hide elements that admin shouldn't see
+        // Ocultar elementos que admin no debe ver
         const adminHideElements = document.querySelectorAll('.admin-hide');
         adminHideElements.forEach(el => el.style.display = 'none');
         
-        // Protect secretarial pages from admin
+        // Proteger páginas exclusivas de secretaría
         if (currentPath.includes('index.html') || currentPath.includes('importar_excel.html') || currentPath.includes('caja_informe.html')) {
             alert("Acceso denegado: Panel exclusivo de Secretaría.");
             window.location.href = 'estado_pagos.html';
