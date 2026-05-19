@@ -93,6 +93,11 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
         raise credentials_exception
     return user
 
+# --- KEEP-ALIVE PING (evita que Render se duerma) ---
+@app.get("/api/ping")
+def ping():
+    return {"status": "ok", "message": "Servidor activo ✓"}
+
 async def get_current_active_secretaria(current_user: models.Usuario = Depends(get_current_user)):
     if current_user.rol != "secretaria" and current_user.rol != "admin":
         raise HTTPException(status_code=403, detail="No tiene permisos de secretaria")
