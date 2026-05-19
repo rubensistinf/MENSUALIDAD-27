@@ -115,25 +115,29 @@
     <style>
         @media print {
             @page {
-                margin: 1cm;
+                margin: 0; /* Elimina la URL y Fecha del navegador */
                 size: A4 portrait;
             }
             body {
                 margin: 0;
             }
             #printReceiptArea {
-                display: block !important;
+                display: flex !important;
+                flex-direction: column;
+                height: 100vh; /* Para que ocupe la página entera */
+                padding: 1.5cm 2cm !important; /* Márgenes internos limpios */
+                box-sizing: border-box;
             }
             .firmas-container {
-                margin-top: 30px !important;
-                padding-bottom: 10px;
+                margin-top: auto !important; /* Empuja las firmas hasta abajo pero dentro de la página */
+                padding-bottom: 20px;
             }
         }
     </style>
     <div id="printReceiptArea" style="display:none; background:white; padding:30px 40px; max-width:780px; margin:0 auto; font-family:'Arial',sans-serif; color:#111;">
         
         <!-- CABECERA INSTITUCIONAL -->
-        <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:3px solid #FFA500; padding-bottom:15px; margin-bottom:18px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:3px solid #FFA500; padding-bottom:15px; margin-bottom:30px;">
             <div style="display:flex;align-items:center;gap:15px;">
                 <img id="printLogo" src="images/logo.png" class="receipt-logo" alt="Logo" onerror="this.style.display='none'">
                 <div>
@@ -151,14 +155,14 @@
         </div>
 
         <!-- DATOS DEL APODERADO -->
-        <div style="background:#fff9f0;border:1px solid #FFA500;border-radius:8px;padding:12px 18px;margin-bottom:16px;">
+        <div style="background:#fff9f0;border:1px solid #FFA500;border-radius:8px;padding:12px 18px;margin-bottom:30px;">
             <div style="font-size:11px;font-weight:700;color:#FFA500;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Padre / Madre / Tutor Apoderado</div>
             <div style="font-size:16px;font-weight:700;color:#1a1a1a;" id="printNombrePadre">---</div>
             <div style="font-size:11px;color:#777;margin-top:2px;">C.I.: <span id="printCarnetPadre">---</span></div>
         </div>
 
         <!-- TABLA DE ESTUDIANTES -->
-        <div style="margin-bottom:20px;">
+        <div style="margin-bottom:35px;">
             <div style="font-size:12px;font-weight:700;color:#FFA500;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Estudiantes Inscritos Beneficiados</div>
             <table style="width:100%;border-collapse:collapse;font-size:12px;border: 1px solid #FFA500;">
                 <thead>
@@ -174,14 +178,14 @@
         </div>
 
         <!-- CONCEPTO -->
-        <div style="background:#f0fff5;border:1px solid #00B050;border-radius:8px;padding:12px 18px;margin-bottom:16px;">
+        <div style="background:#f0fff5;border:1px solid #00B050;border-radius:8px;padding:12px 18px;margin-bottom:30px;">
             <div style="font-size:11px;font-weight:700;color:#00B050;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Por Concepto De:</div>
             <div style="font-size:13px;font-weight:600;color:#1a1a1a;">APORTE ANUAL PARA EL MEJORAMIENTO Y DESARROLLO DE LA UNIDAD EDUCATIVA</div>
             <div style="font-size:11px;color:#555;margin-top:3px;">Incluye: Mantenimiento de infraestructura, material didáctico, actividades académicas y equipamiento escolar.</div>
         </div>
 
         <!-- MONTO TOTAL -->
-        <div style="display:flex;justify-content:space-between;align-items:center;background:#1a1a1a;border-radius:8px;padding:14px 20px;margin-bottom:22px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;background:#1a1a1a;border-radius:8px;padding:14px 20px;margin-bottom:40px;">
             <div>
                 <div style="font-size:11px;color:#FFA500;font-weight:700;text-transform:uppercase;letter-spacing:1px;">La Suma De:</div>
                 <div style="font-size:15px;color:white;font-weight:700;">CINCUENTA 00/100 BOLIVIANOS</div>
