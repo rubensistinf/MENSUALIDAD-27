@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8000/api';
+const API_URL = '/api';
 
 const inputCarnet = document.getElementById('inputCarnet');
 const btnBuscarPadre = document.getElementById('btnBuscarPadre');
@@ -21,7 +21,7 @@ btnBuscarPadre.addEventListener('click', async () => {
     if (!carnet) return;
 
     try {
-        const response = await fetch(`${API_URL}/padres/${carnet}`);
+        const response = await fetchWithAuth(`${API_URL}/padres/${carnet}`);
         if (response.ok) {
             const data = await response.json();
             inputNombrePadre.value = data.nombre_completo;
@@ -48,7 +48,7 @@ searchEstudiante.addEventListener('input', () => {
         }
 
         try {
-            const response = await fetch(`${API_URL}/estudiantes?search=${query}`);
+            const response = await fetchWithAuth(`${API_URL}/estudiantes?search=${query}`);
             const data = await response.json();
             
             resultsEstudiantes.innerHTML = '';
@@ -137,9 +137,8 @@ btnGenerarRecibo.addEventListener('click', async () => {
         
         // Crear padre si no existe
         if (!pId) {
-            const pRes = await fetch(`${API_URL}/padres`, {
+            const pRes = await fetchWithAuth(`${API_URL}/padres`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ carnet: carnet, nombre_completo: nombrePadre })
             });
             const pData = await pRes.json();
@@ -147,18 +146,29 @@ btnGenerarRecibo.addEventListener('click', async () => {
             padreIdInput.value = pId;
         }
 
-        // Crear recibo
-        const rRes = await fetch(`${API_URL}/recibos`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                padre_id: pId,
-                monto: 50.0,
-                estudiantes_ids: hijosSeleccionados.map(h => h.id)
-            })
-        });
-
-        const recibo = await rRes.json();
+        const payload = {
+            padre_id: pId,
+            monto: 50.0,
+            estudiantes_ids: hijosSeleccionados.map(h => h.id)
+        };
+        
+        let recibo;
+        try {
+            const rRes = await fetchWithAuth(`${API_URL}/recibos`, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+            recibo = await rRes.json();
+        } catch (e) {
+            // Offline fallback
+            console.warn("Network error, saving to offline queue");
+            await saveToSyncQueue(payload);
+            recibo = {
+                nro_recibo: "REC-OFFLINE",
+                fecha: new Date().toISOString()
+            };
+            alert("Sin conexión. El recibo se guardó localmente y se sincronizará cuando vuelva el internet.");
+        }
 
         // Preparar vista de impresión
         document.getElementById('printNroRecibo').innerText = recibo.nro_recibo;
@@ -170,7 +180,6 @@ btnGenerarRecibo.addEventListener('click', async () => {
         const printTbody = document.getElementById('printTbodyHijos');
         printTbody.innerHTML = '';
         
-        // La plantilla de excel muestra hasta 6 hijos. Llenaremos filas.
         for (let i = 0; i < 6; i++) {
             const hijo = hijosSeleccionados[i];
             const tr = document.createElement('tr');
@@ -178,11 +187,13 @@ btnGenerarRecibo.addEventListener('click', async () => {
                 tr.innerHTML = `
                     <td style="border: 1px solid #00B050; padding: 5px; text-align: center;">${i+1}º</td>
                     <td style="border: 1px solid #00B050; padding: 5px;">${hijo.nombres} ${hijo.apellidos}</td>
+                    <td style="border: 1px solid #00B050; padding: 5px; text-align: center;">${hijo.ci || '-'}</td>
                     <td style="border: 1px solid #00B050; padding: 5px; text-align: center;">${hijo.curso} "${hijo.paralelo}"</td>
                 `;
             } else {
                 tr.innerHTML = `
                     <td style="border: 1px solid #00B050; padding: 5px; text-align: center; color: transparent;">-</td>
+                    <td style="border: 1px solid #00B050; padding: 5px;"></td>
                     <td style="border: 1px solid #00B050; padding: 5px;"></td>
                     <td style="border: 1px solid #00B050; padding: 5px;"></td>
                 `;

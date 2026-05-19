@@ -5,9 +5,11 @@ from datetime import datetime
 class EstudianteBase(BaseModel):
     nombres: str
     apellidos: str
+    ci: Optional[str] = None
     curso: str
     paralelo: str
     padre_id: Optional[int] = None
+    estado_pago: Optional[str] = "Pendiente"
 
 class EstudianteCreate(EstudianteBase):
     pass
@@ -62,3 +64,47 @@ class Recibo(ReciboBase):
 
     class Config:
         from_attributes = True
+
+class UsuarioBase(BaseModel):
+    username: str
+    rol: str
+
+class UsuarioCreate(UsuarioBase):
+    password: str
+
+class Usuario(UsuarioBase):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+    rol: str
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
+    rol: Optional[str] = None
+
+class CajaTransaccionBase(BaseModel):
+    tipo: str
+    monto: float
+    descripcion: str
+
+class CajaTransaccionCreate(CajaTransaccionBase):
+    pass
+
+class CajaTransaccion(CajaTransaccionBase):
+    id: int
+    fecha: datetime
+    usuario_id: Optional[int] = None
+
+    class Config:
+        from_attributes = True
+
+class CajaInforme(BaseModel):
+    total_ingresos: float
+    total_egresos: float
+    saldo_actual: float
+    transacciones: List[CajaTransaccion]

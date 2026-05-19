@@ -1,7 +1,25 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from database import Base
 import datetime
+
+class Usuario(Base):
+    __tablename__ = "usuarios"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True)
+    password_hash = Column(String)
+    rol = Column(String) # 'admin' o 'secretaria'
+
+class CajaTransaccion(Base):
+    __tablename__ = "caja_transacciones"
+
+    id = Column(Integer, primary_key=True, index=True)
+    tipo = Column(String) # 'ingreso' o 'egreso'
+    monto = Column(Float)
+    descripcion = Column(String)
+    fecha = Column(DateTime, default=datetime.datetime.utcnow)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=True)
 
 class Padre(Base):
     __tablename__ = "padres"
@@ -19,9 +37,11 @@ class Estudiante(Base):
     id = Column(Integer, primary_key=True, index=True)
     nombres = Column(String)
     apellidos = Column(String)
+    ci = Column(String, nullable=True) # Carnet de estudiante
     curso = Column(String)  # Ej: Kinder, Primero, Segundo
     paralelo = Column(String) # Ej: A, B, C
     padre_id = Column(Integer, ForeignKey("padres.id"), nullable=True)
+    estado_pago = Column(String, default="Pendiente") # 'Pendiente' o 'Cancelado'
 
     padre = relationship("Padre", back_populates="estudiantes")
     detalles_recibo = relationship("DetalleRecibo", back_populates="estudiante")
