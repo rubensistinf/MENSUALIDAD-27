@@ -27,7 +27,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             const data = await response.json();
             localStorage.setItem('token', data.access_token);
             localStorage.setItem('rol', data.rol);
-            localStorage.setItem('username', username);
+            localStorage.setItem('username', data.username || username);
             
             // Redirect based on role
             if (data.rol === 'admin') {

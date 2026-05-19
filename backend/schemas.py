@@ -82,6 +82,11 @@ class Token(BaseModel):
     access_token: str
     token_type: str
     rol: str
+    username: Optional[str] = None
+
+class CambiarPassword(BaseModel):
+    password_actual: str
+    password_nuevo: str
 
 class TokenData(BaseModel):
     username: Optional[str] = None

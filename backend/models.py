@@ -8,8 +8,9 @@ class Usuario(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
+    email = Column(String, unique=True, nullable=True)
     password_hash = Column(String)
-    rol = Column(String) # 'admin' o 'secretaria'
+    rol = Column(String) # 'admin', 'secretaria' o 'director'
 
 class CajaTransaccion(Base):
     __tablename__ = "caja_transacciones"

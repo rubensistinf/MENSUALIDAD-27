@@ -13,11 +13,35 @@
     <script src="js/auth.js"></script>
     <script src="js/db.js"></script>
     <script src="instalar/pwa.js"></script>
+    <style>
+        @media print {
+            body * { visibility: hidden !important; }
+            #printReceiptArea, #printReceiptArea * { visibility: visible !important; }
+            #printReceiptArea {
+                position: fixed !important;
+                top: 0; left: 0; right: 0; bottom: 0;
+                margin: 0; padding: 20px;
+                background: white !important;
+            }
+        }
+        .receipt-logo { width: 80px; height: 80px; object-fit: contain; }
+        .notification-toast {
+            position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+            background: #00B050; color: white; padding: 14px 28px; border-radius: 50px;
+            font-weight: 600; font-size: 15px; z-index: 99999;
+            box-shadow: 0 4px 20px rgba(0,176,80,0.5);
+            animation: slideUp 0.4s ease;
+        }
+        @keyframes slideUp {
+            from { opacity:0; transform: translateX(-50%) translateY(20px); }
+            to   { opacity:1; transform: translateX(-50%) translateY(0); }
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar no-print">
         <div class="logo-container">
-            <img src="../logo.png" alt="Logo UE 27 de Mayo" id="navLogo" onerror="this.src='https://via.placeholder.com/50?text=Logo'">
+            <img src="images/logo.png" alt="Logo UE 27 de Mayo" id="navLogo" onerror="this.src='https://via.placeholder.com/50?text=27'">
             <h1>UE 27 de Mayo</h1>
         </div>
         <div class="nav-links">
@@ -26,6 +50,7 @@
             <a href="caja_informe.html"><i class="fas fa-wallet"></i> Caja y Reportes</a>
             <a href="importar_excel.html"><i class="fas fa-file-excel"></i> Importar</a>
             <a href="estudiantes.html"><i class="fas fa-users"></i> Inscritos</a>
+            <a href="cambiar_password.html"><i class="fas fa-key"></i> Mi Cuenta</a>
         </div>
     </nav>
 
@@ -46,6 +71,9 @@
                     <input type="text" id="inputNombrePadre" class="form-control" placeholder="Nombre del apoderado">
                 </div>
                 <input type="hidden" id="padreId">
+                <div style="margin-top: 1rem; padding: 0.8rem; background: rgba(255,165,0,0.08); border-radius: 8px; border-left: 3px solid var(--gold-color);">
+                    <p style="margin:0; font-size:0.8rem; color:#aaa;"><i class="fas fa-info-circle" style="color:var(--gold-color);"></i> Si el padre no existe en el sistema, ingrese su nombre y el sistema lo registrará automáticamente.</p>
+                </div>
             </div>
 
             <!-- Columna Central: Búsqueda de Hijos -->
@@ -60,7 +88,7 @@
                 </div>
             </div>
 
-            <!-- Columna Derecha: Recibo -->
+            <!-- Columna Derecha: Resumen y Cobro -->
             <div class="glass-panel" style="grid-column: 3 / 4; display: flex; flex-direction: column;">
                 <h3 style="color: var(--gold-color); margin-top:0;"><i class="fas fa-receipt"></i> Resumen de Pago</h3>
                 
@@ -82,71 +110,86 @@
         </div>
     </div>
 
-    <!-- Vista de Impresión del Recibo (Oculta en pantalla) -->
-    <div id="printReceiptArea" class="print-only" style="padding: 2rem; max-width: 800px; margin: 0 auto; font-family: Arial, sans-serif; border: 2px solid #000; position: relative;">
-        <!-- Cabecera -->
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00B050; padding-bottom: 1rem; margin-bottom: 1rem;">
-            <div style="width: 120px;">
-                <img src="../logo.png" id="printLogo" style="width: 100%;" alt="Logo">
-            </div>
-            <div style="text-align: center; flex-grow: 1;">
-                <h2 style="color: #FFA500; margin: 0; font-size: 1.5rem; text-transform: uppercase;">UNIDAD EDUCATIVA 27 DE MAYO</h2>
-                <p style="margin: 5px 0; font-size: 0.9rem; color: #333;">BOLIVIA - SANTA CRUZ - PAILON</p>
-                <p style="margin: 5px 0; font-size: 0.9rem; color: #333;">CÓDIGO SIE: 71940029 | Tel Cel: 77633299</p>
-                <h1 style="color: #000; letter-spacing: 5px; margin: 15px 0 0 0;">R E C I B O</h1>
-            </div>
-            <div style="width: 120px; text-align: right;">
-                <p style="font-weight: bold; color: red; font-size: 1.2rem; margin: 0;">N° <span id="printNroRecibo">-----</span></p>
-            </div>
-        </div>
-
-        <!-- Datos del Padre -->
-        <div style="margin-bottom: 1rem;">
-            <p style="margin: 5px 0;"><strong>NOMBRE DEL PADRE/MADRE O APODERADO:</strong></p>
-            <div style="border-bottom: 1px dotted #000; padding: 5px 0; font-size: 1.1rem;" id="printNombrePadre"></div>
-        </div>
-
-        <!-- Tabla Estudiantes -->
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; border: 2px solid #00B050;">
-            <thead>
-                <tr style="background-color: #f0f0f0;">
-                    <th style="border: 1px solid #00B050; padding: 8px; text-align: center; width: 50px; color: #00B050;">Nº</th>
-                    <th style="border: 1px solid #00B050; padding: 8px; text-align: left; color: #00B050;">NOMBRE DEL ESTUDIANTE</th>
-                    <th style="border: 1px solid #00B050; padding: 8px; text-align: center; width: 150px; color: #00B050;">C.I.</th>
-                    <th style="border: 1px solid #00B050; padding: 8px; text-align: center; width: 150px; color: #00B050;">CURSO / PARALELO</th>
-                </tr>
-            </thead>
-            <tbody id="printTbodyHijos">
-                <!-- Se llena por JS (hasta 6 espacios) -->
-            </tbody>
-        </table>
-
-        <!-- Totales y Firmas -->
-        <div style="margin-bottom: 1rem;">
-            <p style="margin: 5px 0; color: #00B050; font-weight: bold;">POR CONCEPTO DE:</p>
-            <p style="margin: 5px 0; padding-left: 20px;">PAGO DE MENSUALIDAD ANUAL</p>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; margin-bottom: 3rem;">
-            <div style="width: 60%;">
-                <p style="margin: 5px 0;"><span style="color: #00B050; font-weight: bold;">LA SUMA DE:</span> <span style="font-size: 1.2rem; font-weight: bold;">CINCUENTA 00/100 BOLIVIANOS</span></p>
-            </div>
-            <div style="width: 30%; text-align: right;">
-                <p style="margin: 5px 0;"><span style="color: #00B050; font-weight: bold;">FECHA:</span> <span id="printFecha" style="border-bottom: 1px dotted #000; padding: 0 20px;"></span></p>
-            </div>
-        </div>
-
-        <div style="display: flex; justify-content: space-around; margin-top: 50px;">
-            <div style="text-align: center; width: 40%;">
-                <div style="border-top: 1px dashed #000; padding-top: 5px;">ENTREGUÉ CONFORME</div>
-            </div>
-            <div style="text-align: center; width: 40%;">
-                <div style="border-top: 1px dashed #000; padding-top: 5px;">RECIBÍ CONFORME</div>
-            </div>
-        </div>
+    <!-- ===================== RECIBO PRO (solo se imprime) ===================== -->
+    <div id="printReceiptArea" style="display:none; background:white; padding:30px 40px; max-width:780px; margin:0 auto; font-family:'Arial',sans-serif; color:#111;">
         
-        <!-- Marca de agua de fondo opcional -->
-        <img src="../logo.png" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.05; width: 400px; z-index: -1;">
+        <!-- CABECERA INSTITUCIONAL -->
+        <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:3px solid #FFA500; padding-bottom:15px; margin-bottom:18px;">
+            <div style="display:flex;align-items:center;gap:15px;">
+                <img id="printLogo" src="images/logo.png" class="receipt-logo" alt="Logo" onerror="this.style.display='none'">
+                <div>
+                    <div style="font-size:17px;font-weight:900;color:#FFA500;text-transform:uppercase;letter-spacing:1px;">Unidad Educativa</div>
+                    <div style="font-size:22px;font-weight:900;color:#1a1a1a;text-transform:uppercase;letter-spacing:2px;">27 de Mayo</div>
+                    <div style="font-size:11px;color:#555;">Bolivia - Santa Cruz - Pailón | Cód. SIE: 71940029</div>
+                    <div style="font-size:11px;color:#555;">Tel/Cel: 77633299</div>
+                </div>
+            </div>
+            <div style="text-align:right;">
+                <div style="background:#FFA500;color:white;padding:6px 18px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">RECIBO OFICIAL</div>
+                <div style="font-size:22px;font-weight:900;color:#c0392b;">N° <span id="printNroRecibo">-----</span></div>
+                <div style="font-size:12px;color:#555;">Fecha: <span id="printFecha" style="font-weight:700;"></span></div>
+            </div>
+        </div>
+
+        <!-- DATOS DEL APODERADO -->
+        <div style="background:#fff9f0;border:1px solid #FFA500;border-radius:8px;padding:12px 18px;margin-bottom:16px;">
+            <div style="font-size:11px;font-weight:700;color:#FFA500;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Padre / Madre / Tutor Apoderado</div>
+            <div style="font-size:16px;font-weight:700;color:#1a1a1a;" id="printNombrePadre">---</div>
+            <div style="font-size:11px;color:#777;margin-top:2px;">C.I.: <span id="printCarnetPadre">---</span></div>
+        </div>
+
+        <!-- TABLA DE ESTUDIANTES -->
+        <div style="margin-bottom:16px;">
+            <div style="font-size:11px;font-weight:700;color:#FFA500;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Estudiantes Inscritos Beneficiados</div>
+            <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                <thead>
+                    <tr style="background:#FFA500;">
+                        <th style="padding:8px 10px;text-align:center;color:white;width:40px;">N°</th>
+                        <th style="padding:8px 10px;text-align:left;color:white;">Nombre Completo del Estudiante</th>
+                        <th style="padding:8px 10px;text-align:center;color:white;width:120px;">C.I.</th>
+                        <th style="padding:8px 10px;text-align:center;color:white;width:160px;">Curso / Paralelo</th>
+                    </tr>
+                </thead>
+                <tbody id="printTbodyHijos"></tbody>
+            </table>
+        </div>
+
+        <!-- CONCEPTO -->
+        <div style="background:#f0fff5;border:1px solid #00B050;border-radius:8px;padding:12px 18px;margin-bottom:16px;">
+            <div style="font-size:11px;font-weight:700;color:#00B050;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Por Concepto De:</div>
+            <div style="font-size:13px;font-weight:600;color:#1a1a1a;">APORTE ANUAL PARA EL MEJORAMIENTO Y DESARROLLO DE LA UNIDAD EDUCATIVA</div>
+            <div style="font-size:11px;color:#555;margin-top:3px;">Incluye: Mantenimiento de infraestructura, material didáctico, actividades académicas y equipamiento escolar.</div>
+        </div>
+
+        <!-- MONTO TOTAL -->
+        <div style="display:flex;justify-content:space-between;align-items:center;background:#1a1a1a;border-radius:8px;padding:14px 20px;margin-bottom:22px;">
+            <div>
+                <div style="font-size:11px;color:#FFA500;font-weight:700;text-transform:uppercase;letter-spacing:1px;">La Suma De:</div>
+                <div style="font-size:15px;color:white;font-weight:700;">CINCUENTA 00/100 BOLIVIANOS</div>
+            </div>
+            <div style="text-align:right;">
+                <div style="font-size:11px;color:#FFA500;font-weight:700;">MONTO TOTAL</div>
+                <div style="font-size:32px;color:white;font-weight:900;">50 <span style="font-size:16px;">Bs.</span></div>
+            </div>
+        </div>
+
+        <!-- FIRMAS -->
+        <div style="display:flex;justify-content:space-around;margin-top:10px;">
+            <div style="text-align:center;width:200px;">
+                <div style="border-top:2px dashed #999;padding-top:8px;font-size:12px;color:#555;">ENTREGUÉ CONFORME</div>
+                <div style="font-size:10px;color:#888;margin-top:2px;">Padre / Madre / Tutor</div>
+            </div>
+            <div style="text-align:center;width:200px;">
+                <div style="border-top:2px dashed #999;padding-top:8px;font-size:12px;color:#555;">RECIBI CONFORME</div>
+                <div style="font-size:10px;color:#888;margin-top:2px;">Secretaria / Tesorera</div>
+            </div>
+        </div>
+
+        <!-- PIE DE PÁGINA -->
+        <div style="text-align:center;margin-top:20px;border-top:1px solid #eee;padding-top:10px;">
+            <div style="font-size:10px;color:#aaa;">Este recibo es un documento oficial de la Unidad Educativa 27 de Mayo.</div>
+            <div style="font-size:10px;color:#aaa;">Conserve este comprobante para cualquier consulta futura.</div>
+        </div>
     </div>
 
     <script src="js/app.js"></script>

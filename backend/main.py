@@ -88,12 +88,25 @@ async def get_current_active_admin(current_user: models.Usuario = Depends(get_cu
 @app.on_event("startup")
 def create_initial_users():
     db = next(get_db())
-    if not db.query(models.Usuario).first():
-        admin = models.Usuario(username="admin", password_hash=get_password_hash("admin123"), rol="admin")
-        sec = models.Usuario(username="secretaria", password_hash=get_password_hash("sec123"), rol="secretaria")
+    # --- Usuario Admin/Director ---
+    admin = db.query(models.Usuario).filter(models.Usuario.username == "admin").first()
+    if not admin:
+        admin = models.Usuario(username="admin", rol="admin")
         db.add(admin)
+    admin.email = "director@27demayo.com"
+    admin.password_hash = get_password_hash("74420830")
+    admin.rol = "admin"
+
+    # --- Usuario Secretaria ---
+    sec = db.query(models.Usuario).filter(models.Usuario.username == "secretaria").first()
+    if not sec:
+        sec = models.Usuario(username="secretaria", rol="secretaria")
         db.add(sec)
-        db.commit()
+    sec.email = "secretaria@27demayo.com"
+    sec.password_hash = get_password_hash("74420831")
+    sec.rol = "secretaria"
+
+    db.commit()
 
 @app.post("/api/login", response_model=schemas.Token)
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
@@ -108,7 +121,23 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
     access_token = create_access_token(
         data={"sub": user.username, "rol": user.rol}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer", "rol": user.rol}
+    return {"access_token": access_token, "token_type": "bearer", "rol": user.rol, "username": user.username}
+
+# --- CAMBIO DE CONTRASEÑA ---
+
+@app.put("/api/usuarios/cambiar-password")
+def cambiar_password(
+    data: schemas.CambiarPassword,
+    db: Session = Depends(get_db),
+    current_user: models.Usuario = Depends(get_current_user)
+):
+    if not verify_password(data.password_actual, current_user.password_hash):
+        raise HTTPException(status_code=400, detail="Contraseña actual incorrecta")
+    if len(data.password_nuevo) < 6:
+        raise HTTPException(status_code=400, detail="La nueva contraseña debe tener al menos 6 caracteres")
+    current_user.password_hash = get_password_hash(data.password_nuevo)
+    db.commit()
+    return {"message": "Contraseña cambiada exitosamente"}
 
 # --- ESTUDIANTES ---
 
