@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="js/auth.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         .upload-area {
             border: 2px dashed var(--gold-color);
@@ -48,10 +49,15 @@
             <h2 style="color: var(--gold-color); text-align: center; margin-top: 0;">
                 <i class="fas fa-cloud-upload-alt"></i> Importar Estudiantes desde Excel
             </h2>
-            <p style="text-align: center; color: #aaa; margin-bottom: 2rem;">
+            <p style="text-align: center; color: #aaa; margin-bottom: 1.5rem;">
                 Sube la lista de estudiantes inscritos. El archivo debe tener las columnas: <br>
                 <strong>Nombres | Apellidos | CI (Opcional)</strong> en la primera hoja a partir de la fila 2.
             </p>
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <button id="btnDescargarPlantilla" class="btn btn-success" style="display: inline-block;">
+                    <i class="fas fa-download"></i> Descargar Plantilla
+                </button>
+            </div>
 
             <form id="formUpload">
                 <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
@@ -107,6 +113,23 @@
                 fileName.innerText = e.target.files[0].name;
                 fileName.style.color = 'var(--primary-color)';
             }
+        });
+
+        document.getElementById('btnDescargarPlantilla').addEventListener('click', () => {
+            // Crear el libro de trabajo y la hoja
+            const wb = XLSX.utils.book_new();
+            // Nombres de las columnas
+            const ws_data = [
+                ['Nombres', 'Apellidos', 'CI']
+            ];
+            const ws = XLSX.utils.aoa_to_sheet(ws_data);
+            
+            // Ajustar ancho de columnas
+            ws['!cols'] = [ {wch: 25}, {wch: 25}, {wch: 15} ];
+            
+            XLSX.utils.book_append_sheet(wb, ws, "Estudiantes");
+            // Descargar
+            XLSX.writeFile(wb, "Plantilla_Inscritos.xlsx");
         });
 
         document.getElementById('formUpload').addEventListener('submit', async (e) => {
