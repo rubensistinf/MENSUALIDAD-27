@@ -13,6 +13,7 @@ import os
 import uuid
 import datetime
 from passlib.context import CryptContext
+import bcrypt as _bcrypt
 from jose import JWTError, jwt
 from io import BytesIO
 
@@ -53,11 +54,15 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7 # 1 semana
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
 
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    try:
+        return _bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
+    except Exception:
+        return False
 
-def get_password_hash(password):
-    return pwd_context.hash(password)
+def get_password_hash(password: str) -> str:
+    salt = _bcrypt.gensalt()
+    return _bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
 
 def create_access_token(data: dict, expires_delta: Optional[datetime.timedelta] = None):
     to_encode = data.copy()
