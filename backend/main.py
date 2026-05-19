@@ -22,6 +22,19 @@ from database import engine, get_db
 
 models.Base.metadata.create_all(bind=engine)
 
+# --- MIGRACION AUTOMATICA: agrega columna email si no existe ---
+try:
+    from sqlalchemy import text, inspect as sa_inspect
+    inspector = sa_inspect(engine)
+    existing_cols = [col['name'] for col in inspector.get_columns('usuarios')]
+    if 'email' not in existing_cols:
+        with engine.connect() as conn:
+            conn.execute(text("ALTER TABLE usuarios ADD COLUMN email VARCHAR"))
+            conn.commit()
+        print("[Migration] Columna 'email' agregada exitosamente.")
+except Exception as migration_err:
+    print(f"[Migration] Nota: {migration_err}")
+
 app = FastAPI(title="App Mensualidad Pro - UE 27 de Mayo")
 
 app.add_middleware(
