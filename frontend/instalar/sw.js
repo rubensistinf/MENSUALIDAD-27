@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mensualidad-27-v3';
+const CACHE_NAME = 'aporte-anual-v5';
 const ASSETS = [
   '/',
   '/login.html',
