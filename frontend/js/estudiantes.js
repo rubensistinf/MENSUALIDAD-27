@@ -1,3 +1,10 @@
+Viewed estudiantes.js:1-83
+
+Claro que sí, para que no tengas que buscar las líneas exactas, aquí tienes **todo el código completo y corregido** del archivo `estudiantes.js`. 
+
+Solo cópialo todo, pégalo en tu archivo `frontend/js/estudiantes.js` en GitHub (borrando todo lo que había antes), guárdalo ("Commit changes") y Render hará el resto:
+
+```javascript
 const API_URL = '/api';
 
 const tbody = document.getElementById('tbodyEstudiantes');
@@ -13,7 +20,7 @@ async function fetchEstudiantes() {
     loadingMsg.style.display = 'block';
     tbody.innerHTML = '';
     
-    let url = new URL(`${API_URL}/estudiantes`);
+    let url = new URL(`${API_URL}/estudiantes`, window.location.origin);
     if (inputSearch.value) url.searchParams.append('search', inputSearch.value);
     if (selectCurso.value) url.searchParams.append('curso', selectCurso.value);
     if (selectParalelo.value) url.searchParams.append('paralelo', selectParalelo.value);
@@ -56,7 +63,7 @@ selectCurso.addEventListener('change', handleFilterChange);
 selectParalelo.addEventListener('change', handleFilterChange);
 
 btnExportar.addEventListener('click', async () => {
-    let url = new URL(`${API_URL}/estudiantes/exportar`);
+    let url = new URL(`${API_URL}/estudiantes/exportar`, window.location.origin);
     if (selectCurso.value) url.searchParams.append('curso', selectCurso.value);
     if (selectParalelo.value) url.searchParams.append('paralelo', selectParalelo.value);
     
@@ -80,3 +87,4 @@ btnExportar.addEventListener('click', async () => {
 
 // Initial fetch
 fetchEstudiantes();
+```
