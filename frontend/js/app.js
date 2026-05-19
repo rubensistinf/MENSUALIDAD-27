@@ -224,17 +224,17 @@ btnGenerarRecibo.addEventListener('click', async () => {
             const bg = i % 2 === 0 ? '#fff' : '#fafafa';
             if (hijo) {
                 tr.innerHTML = `
-                    <td style="border:1px solid #FFA500;padding:7px 10px;text-align:center;background:${bg};font-weight:700;">${i+1}°</td>
-                    <td style="border:1px solid #FFA500;padding:7px 10px;background:${bg};font-weight:600;">${hijo.apellidos} ${hijo.nombres}</td>
-                    <td style="border:1px solid #FFA500;padding:7px 10px;text-align:center;background:${bg};">${hijo.ci || '-'}</td>
-                    <td style="border:1px solid #FFA500;padding:7px 10px;text-align:center;background:${bg};font-weight:600;color:#00B050;">${hijo.curso} "${hijo.paralelo}"</td>
+                    <td style="border:1px solid #FFA500;padding:10px 10px;text-align:center;background:${bg};font-weight:700;">${i+1}°</td>
+                    <td style="border:1px solid #FFA500;padding:10px 10px;background:${bg};font-weight:600;">${hijo.apellidos} ${hijo.nombres}</td>
+                    <td style="border:1px solid #FFA500;padding:10px 10px;text-align:center;background:${bg};">${hijo.ci || '-'}</td>
+                    <td style="border:1px solid #FFA500;padding:10px 10px;text-align:center;background:${bg};font-weight:600;color:#00B050;">${hijo.curso} "${hijo.paralelo}"</td>
                 `;
             } else {
                 tr.innerHTML = `
-                    <td style="border:1px solid #eee;padding:7px 10px;text-align:center;background:${bg};color:#ddd;">${i+1}°</td>
-                    <td style="border:1px solid #eee;padding:7px 10px;background:${bg};"></td>
-                    <td style="border:1px solid #eee;padding:7px 10px;background:${bg};"></td>
-                    <td style="border:1px solid #eee;padding:7px 10px;background:${bg};"></td>
+                    <td style="border:1px solid #FFA500;padding:10px 10px;text-align:center;background:${bg};color:#ddd;">${i+1}°</td>
+                    <td style="border:1px solid #FFA500;padding:10px 10px;background:${bg};"></td>
+                    <td style="border:1px solid #FFA500;padding:10px 10px;background:${bg};"></td>
+                    <td style="border:1px solid #FFA500;padding:10px 10px;background:${bg};"></td>
                 `;
             }
             printTbody.appendChild(tr);
