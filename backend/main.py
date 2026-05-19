@@ -189,6 +189,35 @@ def get_estudiantes(
         
     return query.offset(skip).limit(limit).all()
 
+@app.delete("/api/estudiantes/{estudiante_id}")
+def delete_estudiante(
+    estudiante_id: int, 
+    db: Session = Depends(get_db),
+    current_user: models.Usuario = Depends(get_current_user)
+):
+    if current_user.rol != "admin":
+        raise HTTPException(status_code=403, detail="Solo el director puede eliminar estudiantes")
+    
+    estudiante = db.query(models.Estudiante).filter(models.Estudiante.id == estudiante_id).first()
+    if not estudiante:
+        raise HTTPException(status_code=404, detail="Estudiante no encontrado")
+        
+    db.delete(estudiante)
+    db.commit()
+    return {"message": "Estudiante eliminado correctamente"}
+
+@app.delete("/api/estudiantes")
+def delete_all_estudiantes(
+    db: Session = Depends(get_db),
+    current_user: models.Usuario = Depends(get_current_user)
+):
+    if current_user.rol != "admin":
+        raise HTTPException(status_code=403, detail="Solo el director puede vaciar la lista de estudiantes")
+        
+    db.query(models.Estudiante).delete()
+    db.commit()
+    return {"message": "Todos los estudiantes han sido eliminados"}
+
 @app.post("/api/estudiantes", response_model=schemas.Estudiante)
 def create_estudiante(estudiante: schemas.EstudianteCreate, db: Session = Depends(get_db)):
     db_estudiante = models.Estudiante(**estudiante.model_dump())
