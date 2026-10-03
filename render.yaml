@@ -1,16 +1,9 @@
 services:
   - type: web
-    name: mensualidad-27-pro
+    name: mensualidad-27
     env: python
-    buildCommand: "pip install -r backend/requirements.txt"
-    startCommand: "cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT"
+    buildCommand: cd backend && pip install -r requirements.txt
+    startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: mensualidad-db
-          property: connectionString
-
-databases:
-  - name: mensualidad-db
-    databaseName: mensualidad
-    user: admin
+      - key: PYTHON_VERSION
+        value: 3.11.0
